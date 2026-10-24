@@ -1,7 +1,7 @@
 {
   "name": "dsh-session-clean",
-  "version": "1.6.2",
-  "description": "为 DeepSeek Harness 侧栏会话补上官方缺失的「删除会话」：运行中置灰、二次确认、真正删除（列表、登记与磁盘数据一并清除，做不到时如实告知）；侧栏底部另有「清理分组」面板，可批量清空整组会话或清空并移除分组。Adds the missing per-session Delete action and a workspace cleanup panel to the DeepSeek Harness sidebar.",
+  "version": "1.6.3-trash.1",
+  "description": "为 DeepSeek Harness 侧栏会话补上官方缺失的「删除会话」：运行中置灰、二次确认；删掉的会话先进「回收站」（可恢复），侧栏底部另有「清理分组」与「回收站」两个面板。Adds the missing per-session Delete action, a restorable recycle bin and a workspace cleanup panel to the DeepSeek Harness sidebar.",
   "type": "module",
   "license": "MIT",
   "exports": {
@@ -37,8 +37,8 @@
     "LICENSE"
   ],
   "meta": {
-    "title": "删除会话",
-    "description": "在侧栏会话的 ⋯ 菜单里加入「删除会话」（运行中置灰、二次确认、真删），侧栏底部另有「清理分组」面板：批量清空整组会话，或清空并移除分组。"
+    "title": "删除会话（含回收站）",
+    "description": "在侧栏会话的 ⋯ 菜单里加入「删除会话」（运行中置灰、二次确认），删掉的会话进入侧栏底部「回收站」，可恢复、可彻底删除；另有「清理分组」面板。"
   },
   "dsh": {
     "bundle": {

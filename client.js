@@ -23,7 +23,7 @@ window.__ModuleLoader__.load({
   factory(require) {
     // Human-synced copy of package.json#version: client bundles cannot read
     // package.json at runtime. Bump together with `npm version`.
-    const VERSION = '1.6.2'
+    const VERSION = '1.6.3-trash.1'
 
     const React = require('react')
     const h = React.createElement
@@ -34,26 +34,28 @@ window.__ModuleLoader__.load({
         menu: '删除会话',
         menuBusy: '会话运行中，无法删除',
         confirmTitle: '删除此会话？',
-        confirmDesc: '将永久删除「{title}」的对话记录与本地数据，删除后无法恢复。',
-        confirmNote: '运行中的会话删不了（菜单会置灰）。\n删掉你正在看的会话也可以，界面会自动切到同工作区的新会话。\n万一删不彻底，会先隐藏并直接告诉你。',
+        confirmDesc: '「{title}」会先移入回收站，随时可以恢复；只有回收站里的「彻底删除」才会真正清掉数据。',
+        confirmNote: '运行中的会话删不了（菜单会置灰）。\n删掉你正在看的会话也可以，界面会自动切到同工作区的新会话。\n删掉的会话进「回收站」（侧栏底部），想找回就去那里恢复。',
         confirmBusy: '会话仍有进行中的工作，无法删除。',
-        confirmAction: '永久删除',
+        confirmAction: '移入回收站',
         cancel: '取消',
         deleting: '正在删除…',
-        done: '会话已删除',
-        doneUnloaded: '会话已删除：数据已清除，列表里也不会再出现',
-        doneLive: '数据已删除，但这次没能把会话彻底移除：先临时藏了起来（切到「显示已归档」能看到），重启 DSH 后彻底消失',
+        done: '已移入回收站',
+        doneUnloaded: '已移入回收站：列表里不再出现，可在侧栏底部「回收站」找回',
+        doneNoPayload: '会话已删除（它还没有落盘的数据，没有可恢复的内容）',
+        doneLegacy: '已删除。注意：这次是彻底删除——回收站要重启 DSH 后才会启用',
+        doneLive: '数据已移入回收站，但这次没能把会话彻底移出内存：先临时藏了起来（切到「显示已归档」能看到），重启 DSH 后彻底消失',
         failed: '删除失败：{message}',
         cleanupFooter: '清理分组',
         cleanupTitle: '清理会话分组',
-        cleanupDesc: '选择一个分组，删除它下面的全部会话。此操作不可恢复，运行中的会话会被整批拦下。',
+        cleanupDesc: '选择一个分组，把它的会话全部移入回收站（可随时恢复）。含运行中会话的分组会被整批拦下。',
         cleanupEmpty: '还没有任何带会话的分组',
         cleanupCount: '{n} 个会话',
         cleanupCountTotal: '共 {n} 个会话',
         cleanupBusyTag: '{n} 个运行中',
         cleanupAction: '清空',
         cleanupConfirmTitle: '清空「{title}」的全部会话？',
-        cleanupConfirmDesc: '将永久删除该分组下的 {n} 个会话及其本地数据，删除后无法恢复。',
+        cleanupConfirmDesc: '将把该分组下的 {n} 个会话移入回收站，之后可以在那里恢复。',
         cleanupBusyBlocked: '有 {n} 个会话正在运行，已整批取消：请等它们结束再来',
         cleanupWorking: '正在删除 {done}/{total}…',
         cleanupDone: '已删除 {n} 个会话',
@@ -67,31 +69,57 @@ window.__ModuleLoader__.load({
         cleanupUngroupedHint: '不属于任何分组的会话（删掉的分组留下的、或新建时没选分组）',
         cleanupArchivedTag: '{m} 个不在列表',
         cleanupArchivedNote: '其中 {m} 个在默认视图里看不到（已归档 / 子代理等），也会一并删除。',
+        trashFooter: '回收站',
+        trashTitle: '回收站',
+        trashDesc: '删掉的会话先放在这里，随时可以恢复。只有「彻底删除」和「清空回收站」会真的把数据清掉。',
+        trashEmpty: '回收站是空的',
+        trashCount: '{n} 个会话',
+        trashDeletedAt: '删除于 {time}',
+        trashRestore: '恢复',
+        trashPurge: '彻底删除',
+        trashPurgeAll: '清空回收站',
+        trashNotRestorable: '这一条没有可恢复的会话数据',
+        trashConfirmPurgeTitle: '彻底删除「{title}」？',
+        trashConfirmPurgeDesc: '这条会话的数据会被永久删除，无法恢复。',
+        trashConfirmEmptyTitle: '清空回收站？',
+        trashConfirmEmptyDesc: '回收站里的 {n} 个会话会被永久删除，无法恢复。',
+        trashRestored: '已恢复「{title}」',
+        trashRestoredArchived: '已恢复「{title}」（原来是归档状态，仍在归档里）',
+        trashRestoredMissingWorkspace: '已恢复「{title}」，但原分组已不存在，会出现在「未分组」',
+        trashPurged: '已彻底删除',
+        trashPurgeAllDone: '回收站已清空（{n} 个）',
+        trashWorking: '正在处理…',
+        trashNoop: '回收站里已经没有内容了',
+        trashNeedsRestart: '回收站还没启用：请重启 DSH 后重试',
+        trashFailed: '操作失败：{message}',
+        trashNeedRefresh: '已恢复。若侧栏还没出现，刷新一下页面即可。',
       },
       en: {
         menu: 'Delete session',
         menuBusy: 'Session is running; deletion unavailable',
         confirmTitle: 'Delete this session?',
-        confirmDesc: 'This permanently deletes “{title}” — its chat history and local data. It cannot be undone.',
-        confirmNote: 'A running session cannot be deleted (its menu row greys out).\nDeleting the session you are viewing is fine: the view moves to a fresh session in the same workspace.\nIf a full delete is not possible, it is hidden and you are told right away.',
+        confirmDesc: '“{title}” moves to the recycle bin first and can be restored at any time. Only “Delete permanently” inside the bin really erases data.',
+        confirmNote: 'A running session cannot be deleted (its menu row greys out).\nDeleting the session you are viewing is fine: the view moves to a fresh session in the same workspace.\nDeleted sessions land in the recycle bin (sidebar footer) — restore them from there.',
         confirmBusy: 'The session still has work in progress and cannot be deleted.',
-        confirmAction: 'Delete permanently',
+        confirmAction: 'Move to bin',
         cancel: 'Cancel',
         deleting: 'Deleting…',
-        done: 'Session deleted',
-        doneUnloaded: 'Session deleted: the data is gone and it will not come back in the list',
-        doneLive: 'The data is deleted, but the session itself could not be fully removed this time: it is hidden for now (visible under “show archived”) and disappears for good after a DSH restart',
+        done: 'Moved to the recycle bin',
+        doneUnloaded: 'Moved to the recycle bin: it leaves the list and can be restored from the sidebar footer',
+        doneNoPayload: 'Session deleted — it had no data on disk yet, so there was nothing to keep',
+        doneLegacy: 'Deleted. Note: this was a permanent delete — the recycle bin only works after a DSH restart',
+        doneLive: 'The data is in the recycle bin, but the session itself could not be fully unloaded this time: it is hidden for now (visible under “show archived”) and disappears for good after a DSH restart',
         failed: 'Delete failed: {message}',
         cleanupFooter: 'Clean workspace',
         cleanupTitle: 'Clean a workspace',
-        cleanupDesc: 'Pick a workspace and delete every session it owns. This cannot be undone; a batch containing any running session is refused as a whole.',
+        cleanupDesc: 'Pick a workspace and move all of its sessions to the recycle bin (restorable). A batch containing any running session is refused as a whole.',
         cleanupEmpty: 'No workspace has any session yet',
         cleanupCount: '{n} sessions',
         cleanupCountTotal: '{n} sessions in total',
         cleanupBusyTag: '{n} running',
         cleanupAction: 'Clean',
         cleanupConfirmTitle: 'Delete every session in “{title}”?',
-        cleanupConfirmDesc: 'This permanently deletes the {n} session(s) in that workspace and their local data. It cannot be undone.',
+        cleanupConfirmDesc: 'The {n} session(s) in that workspace move to the recycle bin and can be restored from there.',
         cleanupBusyBlocked: '{n} session(s) are running, so the whole batch was cancelled — try again once they finish',
         cleanupWorking: 'Deleting {done}/{total}…',
         cleanupDone: 'Deleted {n} session(s)',
@@ -105,6 +133,30 @@ window.__ModuleLoader__.load({
         cleanupUngroupedHint: 'Sessions no workspace owns (left by a deleted group, or started without one)',
         cleanupArchivedTag: '{m} hidden',
         cleanupArchivedNote: 'This also deletes {m} entry(ies) the default view hides (archived / subagent etc.).',
+        trashFooter: 'Recycle bin',
+        trashTitle: 'Recycle bin',
+        trashDesc: 'Deleted sessions wait here and can be restored. Only “Delete permanently” and “Empty bin” really erase data.',
+        trashEmpty: 'The recycle bin is empty',
+        trashCount: '{n} session(s)',
+        trashDeletedAt: 'deleted {time}',
+        trashRestore: 'Restore',
+        trashPurge: 'Delete permanently',
+        trashPurgeAll: 'Empty bin',
+        trashNotRestorable: 'This entry has no session data to restore',
+        trashConfirmPurgeTitle: 'Permanently delete “{title}”?',
+        trashConfirmPurgeDesc: 'That session’s data will be erased for good. It cannot be undone.',
+        trashConfirmEmptyTitle: 'Empty the recycle bin?',
+        trashConfirmEmptyDesc: 'The {n} session(s) in the bin will be deleted permanently. It cannot be undone.',
+        trashRestored: 'Restored “{title}”',
+        trashRestoredArchived: 'Restored “{title}” (it was archived, and still is)',
+        trashRestoredMissingWorkspace: 'Restored “{title}”, but its workspace is gone — it will appear under Ungrouped',
+        trashPurged: 'Deleted permanently',
+        trashPurgeAllDone: 'Recycle bin emptied ({n})',
+        trashWorking: 'Working…',
+        trashNoop: 'The recycle bin is already empty',
+        trashNeedsRestart: 'The recycle bin is not active yet — restart DSH and try again',
+        trashFailed: 'Failed: {message}',
+        trashNeedRefresh: 'Restored. If the sidebar has not caught up, reload the page.',
       },
     }
 
@@ -139,6 +191,8 @@ window.__ModuleLoader__.load({
 .dsh-sd-mini { padding: 5px 12px; border-radius: 7px; border: .5px solid var(--dsw-alias-border-l2, #444); background: transparent; color: var(--dsw-alias-state-error-primary, #f85149); font: inherit; font-size: 15px; cursor: pointer; white-space: nowrap; }
 .dsh-sd-mini:disabled { opacity: .45; cursor: default; color: var(--dsw-alias-label-secondary, #888); }
 .dsh-sd-empty { padding: 14px 2px; color: var(--dsw-alias-label-secondary, #999); font-size: 15.5px; }
+.dsh-sd-group-actions { display: inline-flex; gap: 6px; flex: none; }
+.dsh-sd-ghost { color: var(--dsw-alias-label-primary, #ddd); }
 `
       document.head.appendChild(style)
     }
@@ -324,7 +378,11 @@ window.__ModuleLoader__.load({
           // hidden (degraded probe) / it was already cold.
           const unloaded = payload?.unloaded === true
           const stillLive = payload?.live === true
-          setToast(t(unloaded ? 'doneUnloaded' : stillLive ? 'doneLive' : 'done'))
+          const trashed = payload?.trashed === true
+          // An old Host half answers without `trashed` at all: that delete was
+          // permanent, and saying "moved to the bin" would be a lie.
+          const legacy = typeof payload?.trashed !== 'boolean'
+          setToast(t(legacy ? 'doneLegacy' : !trashed ? 'doneNoPayload' : unloaded ? 'doneUnloaded' : stillLive ? 'doneLive' : 'done'))
           settleRequest()
           // Re-pull the session baseline: a *cold* delete leaves no unload
           // event behind, so without this the dead row lingers in the client
@@ -823,6 +881,319 @@ window.__ModuleLoader__.load({
       )
     }
 
+    /* ------------------------------------------------------------------ *
+     * Recycle bin (this fork's addition).
+     *
+     * Deletion is no longer a one-way door: the Host moves the session's
+     * directory into `$DSH_HOME/session-trash/` and this panel is the way
+     * back. It is deliberately a separate overlay cell (order 20, above the
+     * group-cleanup panel at 10) with its own module-level open flag, so the
+     * two panels can never fight over the same state.
+     *
+     * The panel needs no workspace/status hooks — the Host is the single
+     * source of truth for what is binned — so it simply pulls
+     * `GET /_dsh-session-clean/trash` whenever it opens.
+     * ------------------------------------------------------------------ */
+
+    const trashBridge = { open: false }
+    const trashListeners = new Set()
+
+    /** @param {Partial<typeof trashBridge>} patch - fields to merge. */
+    function publishTrash(patch) {
+      Object.assign(trashBridge, patch)
+      for (const listener of trashListeners) listener()
+    }
+
+    function useTrashBridge() {
+      const [value, setValue] = React.useState(trashBridge)
+      React.useEffect(() => {
+        const listener = () => setValue({ ...trashBridge })
+        trashListeners.add(listener)
+        return () => trashListeners.delete(listener)
+      }, [])
+      return value
+    }
+
+    /** @param {number} bytes - a byte count. @returns {string} a short human size. */
+    function formatBytes(bytes) {
+      const value = Number(bytes)
+      if (!Number.isFinite(value) || value <= 0) return '0 B'
+      if (value < 1024) return `${value} B`
+      if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`
+      if (value < 1024 * 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`
+      return `${(value / 1024 / 1024 / 1024).toFixed(2)} GB`
+    }
+
+    /** @param {string} iso - an ISO timestamp. @returns {string} a local-time label. */
+    function formatWhen(iso) {
+      if (typeof iso !== 'string' || iso === '') return ''
+      try {
+        return new Date(iso).toLocaleString()
+      } catch {
+        return iso
+      }
+    }
+
+    /** Sidebar-footer entry point. It only opens the panel; the panel fetches. */
+    function TrashFooterAction({ wide, t }) {
+      return h('button', {
+        type: 'button',
+        className: 'dsh-sd-foot',
+        title: t('trashFooter'),
+        'aria-label': t('trashFooter'),
+        onClick: () => publishTrash({ open: true }),
+      },
+        h(TrashIcon),
+        wide ? h('span', null, t('trashFooter')) : null,
+      )
+    }
+
+    /**
+     * The bin itself: list one row per binned session, restore it, purge it, or
+     * empty the whole bin. Every destructive step goes through one confirm
+     * screen first; restoring has no confirmation because it is the safe side.
+     */
+    function TrashPanel({ t, ctx }) {
+      const bridge = useTrashBridge()
+      const [entries, setEntries] = React.useState([])
+      const [loading, setLoading] = React.useState(false)
+      const [busy, setBusy] = React.useState('')
+      const [error, setError] = React.useState(null)
+      const [confirm, setConfirm] = React.useState(null)
+      const [toast, setToast] = React.useState(null)
+
+      React.useEffect(() => {
+        if (toast === null) return
+        const timer = window.setTimeout(() => setToast(null), 3600)
+        return () => window.clearTimeout(timer)
+      }, [toast])
+
+      const load = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+          const response = await fetch('/_dsh-session-clean/trash', { credentials: 'same-origin' })
+          if (response.status === 404) throw new Error(t('trashNeedsRestart'))
+          const payload = await response.json().catch(() => ({}))
+          if (!response.ok || payload?.ok !== true) throw new Error(payload?.error ?? `HTTP ${response.status}`)
+          setEntries(Array.isArray(payload.entries) ? payload.entries : [])
+        } catch (reason) {
+          setError(reason instanceof Error ? reason.message : String(reason))
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      // Pull a fresh bin every time the panel opens: another tab (or the
+      // previous session) may have changed it.
+      React.useEffect(() => {
+        if (!bridge.open) {
+          setConfirm(null)
+          return
+        }
+        void load()
+      }, [bridge.open])
+
+      /** Ask the client session list to re-pull the persisted corpus. */
+      const refreshSessions = () => {
+        try {
+          const sessions = ctx?.get?.('sessions')
+          const refreshed = sessions?.refresh?.()
+          if (refreshed && typeof refreshed.catch === 'function') refreshed.catch(() => {})
+        } catch {
+          // Refresh is a convenience; the restore already succeeded on disk.
+        }
+      }
+
+      const restore = async (entry) => {
+        if (busy !== '') return
+        setBusy(entry.sessionId)
+        setError(null)
+        try {
+          const response = await fetch('/_dsh-session-clean/trash/restore', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ sessionId: entry.sessionId }),
+          })
+          const payload = await response.json().catch(() => ({}))
+          if (!response.ok || payload?.ok !== true) throw new Error(payload?.error ?? `HTTP ${response.status}`)
+          const title = payload.title || entry.title || entry.sessionId
+          // `attached` is what the Host's registry actually did: only a real
+          // attachSession survives a reconnect. Anything else lands under
+          // Ungrouped and the user gets told so.
+          const archived = payload.archived === true
+          const grouped = payload.attached === true
+          setToast(t(
+            archived
+              ? 'trashRestoredArchived'
+              : grouped
+                ? 'trashRestored'
+                : 'trashRestoredMissingWorkspace',
+            { title },
+          ))
+          setEntries((previous) => previous.filter((item) => item.sessionId !== entry.sessionId))
+          refreshSessions()
+        } catch (reason) {
+          setError(reason instanceof Error ? reason.message : String(reason))
+        } finally {
+          setBusy('')
+        }
+      }
+
+      const purge = async (entry) => {
+        setBusy(entry.sessionId)
+        setError(null)
+        try {
+          const response = await fetch('/_dsh-session-clean/trash/purge', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ sessionId: entry.sessionId }),
+          })
+          const payload = await response.json().catch(() => ({}))
+          if (!response.ok || payload?.ok !== true) throw new Error(payload?.error ?? `HTTP ${response.status}`)
+          setEntries((previous) => previous.filter((item) => item.sessionId !== entry.sessionId))
+          setConfirm(null)
+          setToast(t('trashPurged'))
+        } catch (reason) {
+          setError(reason instanceof Error ? reason.message : String(reason))
+        } finally {
+          setBusy('')
+        }
+      }
+
+      const empty = async () => {
+        setBusy('*')
+        setError(null)
+        try {
+          const response = await fetch('/_dsh-session-clean/trash/empty', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: '{}',
+          })
+          const payload = await response.json().catch(() => ({}))
+          if (!response.ok || payload?.ok !== true) throw new Error(payload?.error ?? `HTTP ${response.status}`)
+          setEntries([])
+          setConfirm(null)
+          setToast(Number(payload.count) > 0 ? t('trashPurgeAllDone', { n: payload.count }) : t('trashNoop'))
+        } catch (reason) {
+          setError(reason instanceof Error ? reason.message : String(reason))
+        } finally {
+          setBusy('')
+        }
+      }
+
+      const toastNode = toast !== null ? h('div', { className: 'dsh-sd-toast' }, toast) : null
+      if (!bridge.open) return toastNode
+
+      // Step 2: one confirm screen, shared by "purge one" and "empty bin".
+      if (confirm !== null) {
+        const isEmpty = confirm.kind === 'empty'
+        const heading = isEmpty
+          ? t('trashConfirmEmptyTitle')
+          : t('trashConfirmPurgeTitle', { title: confirm.entry?.title || confirm.entry?.sessionId || '' })
+        const description = isEmpty
+          ? t('trashConfirmEmptyDesc', { n: entries.length })
+          : t('trashConfirmPurgeDesc')
+        return h(React.Fragment, null,
+          h('div', { className: 'dsh-sd-overlay', role: 'presentation' },
+            h('div', { className: 'dsh-sd-dialog', role: 'dialog', 'aria-modal': true, 'aria-label': heading },
+              h('h2', { className: 'dsh-sd-title' }, heading),
+              h('p', { className: 'dsh-sd-desc' }, description),
+              error !== null ? h('p', { className: 'dsh-sd-warn' }, t('trashFailed', { message: error })) : null,
+              h('div', { className: 'dsh-sd-footer' },
+                h('button', {
+                  type: 'button', className: 'dsh-sd-btn', disabled: busy !== '',
+                  onClick: () => { if (busy === '') { setConfirm(null); setError(null) } },
+                }, t('cancel')),
+                h('button', {
+                  type: 'button', className: 'dsh-sd-btn', 'data-danger': true, disabled: busy !== '',
+                  onClick: () => {
+                    if (busy !== '') return
+                    if (isEmpty) void empty()
+                    else void purge(confirm.entry)
+                  },
+                }, busy !== '' ? t('trashWorking') : t('trashPurge')),
+              ),
+            ),
+          ),
+          toastNode,
+        )
+      }
+
+      // Step 1: the list.
+      return h(React.Fragment, null,
+        h('div', { className: 'dsh-sd-overlay', role: 'presentation' },
+          h('div', {
+            className: 'dsh-sd-dialog dsh-sd-panel',
+            role: 'dialog', 'aria-modal': true, 'aria-label': t('trashTitle'),
+          },
+            h('h2', { className: 'dsh-sd-title' },
+              entries.length > 0
+                ? `${t('trashTitle')} · ${t('trashCount', { n: entries.length })} · ${formatBytes(entries.reduce((sum, entry) => sum + (Number(entry.bytes) || 0), 0))}`
+                : t('trashTitle')),
+            h('p', { className: 'dsh-sd-desc' }, t('trashDesc')),
+            error !== null ? h('p', { className: 'dsh-sd-warn' }, t('trashFailed', { message: error })) : null,
+            h('div', { className: 'dsh-sd-groups' },
+              loading && entries.length === 0
+                ? h('div', { className: 'dsh-sd-empty' }, t('trashWorking'))
+                : entries.length === 0
+                  ? h('div', { className: 'dsh-sd-empty' }, t('trashEmpty'))
+                  : entries.map((entry) => h('div', { className: 'dsh-sd-group', key: entry.sessionId },
+                    h('div', { className: 'dsh-sd-group-main' },
+                      h('div', { className: 'dsh-sd-group-title' }, entry.title || entry.sessionId),
+                      h('div', { className: 'dsh-sd-group-meta' },
+                        [
+                          entry.workspaceTitle || entry.workspacePath || t('cleanupUngrouped'),
+                          entry.deletedAt ? t('trashDeletedAt', { time: formatWhen(entry.deletedAt) }) : '',
+                          formatBytes(entry.bytes),
+                        ].filter((part) => typeof part === 'string' && part !== '').join(' · ')),
+                    ),
+                    h('div', { className: 'dsh-sd-group-actions' },
+                      h('button', {
+                        type: 'button',
+                        className: 'dsh-sd-mini dsh-sd-ghost',
+                        disabled: busy !== '' || entry.restorable === false,
+                        title: entry.restorable === false ? t('trashNotRestorable') : undefined,
+                        onClick: () => { if (busy === '') void restore(entry) },
+                      }, t('trashRestore')),
+                      h('button', {
+                        type: 'button',
+                        className: 'dsh-sd-mini',
+                        disabled: busy !== '',
+                        onClick: () => {
+                          if (busy !== '') return
+                          setError(null)
+                          setConfirm({ kind: 'purge', entry })
+                        },
+                      }, t('trashPurge')),
+                    ),
+                  )),
+            ),
+            h('div', { className: 'dsh-sd-footer' },
+              h('button', {
+                type: 'button',
+                className: 'dsh-sd-btn',
+                disabled: busy !== '' || entries.length === 0,
+                onClick: () => {
+                  if (busy !== '' || entries.length === 0) return
+                  setError(null)
+                  setConfirm({ kind: 'empty' })
+                },
+              }, t('trashPurgeAll')),
+              h('button', {
+                type: 'button', className: 'dsh-sd-btn', disabled: busy !== '',
+                onClick: () => { if (busy === '') publishTrash({ open: false }) },
+              }, t('cleanupClose')),
+            ),
+          ),
+        ),
+        toastNode,
+      )
+    }
+
     return {
       inject: ['slots', 'locale'],
       apply(ctx) {
@@ -864,6 +1235,22 @@ window.__ModuleLoader__.load({
           ctx.slots.register(
             { name: 'shell.overlay', id: 'dsh-session-clean-cleanup', order: 10 },
             (props) => h(CleanupPanel, { ...props, t, ctx }),
+          ),
+        )
+
+        // Recycle bin: its own footer entry (order 30, after "Clean workspace"
+        // at 20) and its own overlay cell above the cleanup panel.
+        ctx.slots.inject('sidebar.footer.action', () =>
+          ctx.slots.register(
+            { name: 'sidebar.footer.action', id: 'dsh-session-clean-trash', order: 30, label: () => t('trashFooter') },
+            (props) => h(TrashFooterAction, { ...props, t }),
+          ),
+        )
+
+        ctx.slots.inject('shell.overlay', () =>
+          ctx.slots.register(
+            { name: 'shell.overlay', id: 'dsh-session-clean-trash', order: 20 },
+            (props) => h(TrashPanel, { ...props, t, ctx }),
           ),
         )
       },
